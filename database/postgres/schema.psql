@@ -1,0 +1,21 @@
+CREATE SCHEMA carousel;
+
+CREATE TABLE carousel.locations (
+  id SERIAL PRIMARY KEY,
+  location_id TEXT UNIQUE,
+  title TEXT,
+  rating INTEGER,
+  review TEXT[]
+);
+
+CREATE TABLE carousel.images (
+  id SERIAL PRIMARY KEY,
+  location_id TEXT REFERENCES carousel.locations(location_id),
+  url TEXT,
+  helpful BOOLEAN,
+  reported BOOLEAN,
+  profile TEXT,
+  titleTwo TEXT,
+  userRating INTEGER,
+  description TEXT
+);
