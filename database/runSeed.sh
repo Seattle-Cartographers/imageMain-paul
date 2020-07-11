@@ -7,9 +7,6 @@ LOCFILE=$2
 IMAGESFILE=$3
 NUMRECORDS=$4
 
-echo "writing headers"
-node $SEEDFILE locationHeader > $LOCFILE
-node $SEEDFILE imageHeader > $IMAGESFILE
 echo "writing locations"
 node $SEEDFILE location $NUMRECORDS > $LOCFILE
 echo "writing images"

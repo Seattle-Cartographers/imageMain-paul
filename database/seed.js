@@ -1,48 +1,87 @@
 const Chance = require('chance');
+const random = require('fast-random');
+
 const chance = new Chance();
+
+const seed = Date.now();
+const r = random(seed);
+
+// get random number between a and b inclusive, ie (a <= x <= b)
+function randBetween(a, b) {
+  return a + (r.nextInt() % (b - a + 1));
+}
 
 function outputImageHeader() {
   const imageHeader = 'location_id,url,helpful,reported,profile,titletwo,userrating,description\n';
-  console.log(imageHeader);
+  process.stdout.write(imageHeader);
 }
 
 function outputLocationHeader() {
   const locHeader = 'location_id,title,rating,review\n';
-  console.log(locHeader);
+  process.stdout.write(locHeader);
 }
 
-function outputImages(id) {
-  let imageRows = '';
-  const paddedId = (id + 1).toString().padStart(8, '0');
-  const varNumImages = chance.integer({ min: 5, max: 10 });
-  for (let j = 0; j < varNumImages; j += 1) {
-    const titleTwo = chance.word();
-    const userRating = chance.integer({ min: 0, max: 5 });
-    const userName = chance.name();
-    const timeOf = chance.year({ min: 2015, max: 2020 });
-    const month = chance.month();
-    const urlStart = 'https://sdcbundles.s3.us-east-2.amazonaws.com/';
-    const rando = chance.integer({ min: 0, max: 100 });
-    const urlEnd = '.jpg';
-    const profile = 'https://sdcbundles.s3.us-east-2.amazonaws.com/profile.jpg';
-    const url = `${urlStart}${rando}${urlEnd}`;
-    const description = `Traveler photo submitted by ${userName} (${month} ${timeOf})`;
-    imageRows += `${paddedId},${url},${false},${false},${profile},${titleTwo},${userRating},${description}\n`;
+function writeNextLine(makeLine, currentId, maxId) {
+  process.stdout.write(makeLine(currentId), () => {
+    if (currentId < maxId) {
+      writeNextLine(makeLine, currentId + 1, maxId);
+    }
+  });
+}
+
+function outputImages(n) {
+  outputImageHeader();
+  const profile = 'https://sdcbundles.s3.us-east-2.amazonaws.com/profile.jpg';
+  const urlStart = 'https://sdcbundles.s3.us-east-2.amazonaws.com/';
+  const titleTwos = [];
+  const names = [];
+  for (let c = 0; c < 1000; c += 1) {
+    titleTwos.push(chance.word());
+    names.push(chance.name());
   }
-  console.log(imageRows);
+  const makeLine = (id) => {
+    const varNumImages = randBetween(5, 10);
+    const paddedId = id.toString().padStart(8, '0');
+    let lines = '';
+    for (let j = 0; j < varNumImages; j += 1) {
+      const titleTwo = titleTwos[randBetween(0, 99)];
+      const userRating = randBetween(0, 5 );
+      const userName = names[randBetween(0, 99)];
+      const timeOf = chance.year({ min: 2015, max: 2020 });
+      const month = chance.month();
+      const rando = randBetween(0, 10);
+      const url = `${urlStart}${rando}.jpg`;
+      const description = `Traveler photo submitted by ${userName} (${month} ${timeOf})`;
+      lines += `${paddedId},${url},${false},${false},${profile},${titleTwo},${userRating},${description}\n`;
+    }
+    return lines;
+  };
+  writeNextLine(makeLine, 0, n);
 }
 
 function outputLocations(n) {
-  for (let id = 0; id < n; id += 1) {
-    const title = chance.word();
-    const rating = chance.integer({ min: 0, max: 5 });
-    const paddedId = (id + 1).toString().padStart(8, '0');
-    const review = `"{${chance.sentence()}, ${chance.sentence()}}"`;
-    console.log(`${paddedId},${title},${rating},${review}\n`);
+  outputLocationHeader();
+  const sentences = [];
+  const words = [];
+  for (let s = 0; s < 1000; s += 1) {
+    sentences.push(chance.sentence());
+    words.push(chance.word());
   }
+  const makeLine = (id) => {
+    // paddedId
+    const paddedId = id.toString().padStart(8, '0');
+    // title
+    const title = words[randBetween(0, 999)];
+    // rating
+    const rating = randBetween(0, 5);
+    // review
+    const review1 = sentences[randBetween(0, 999)];
+    const review2 = sentences[randBetween(0, 999)];
+    const review = `"{${review1},${review2}}"`;
+    return `${paddedId},${title},${rating},${review}\n`;
+  };
+  writeNextLine(makeLine, 0, n);
 }
-
-console.log(process.argv)
 
 switch (process.argv[2]) {
   case 'location':
@@ -50,12 +89,6 @@ switch (process.argv[2]) {
     break;
   case 'image':
     outputImages(process.argv[3]);
-    break;
-  case 'locationHeader':
-    outputLocationHeader();
-    break;
-  case 'imageHeader':
-    outputImageHeader();
     break;
   default:
     console.log('invalid input');
