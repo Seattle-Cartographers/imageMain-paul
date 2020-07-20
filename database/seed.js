@@ -59,6 +59,63 @@ function outputImages(n) {
   writeNextLine(makeLine, 0, n);
 }
 
+// for speed reasons this is just a copy of the postgres function
+function outputCassandraImages(n) {
+  const profile = 'https://sdcbundles.s3.us-east-2.amazonaws.com/profile.jpg';
+  const urlStart = 'https://sdcbundles.s3.us-east-2.amazonaws.com/';
+  const titleTwos = [];
+  const names = [];
+  for (let c = 0; c < 1000; c += 1) {
+    titleTwos.push(chance.word());
+    names.push(chance.name());
+  }
+  const makeLines = (id) => {
+    const varNumImages = randBetween(5, 10);
+    const lines = [];
+    const paddedId = id.toString().padStart(8, '0');
+    for (let j = 0; j < varNumImages; j += 1) {
+      const rando = randBetween(0, 10);
+      const userName = names[randBetween(0, 99)];
+      const timeOf = chance.year({ min: 2015, max: 2020 });
+      const month = chance.month();
+      lines.push({
+        profile,
+        titletwo: titleTwos[randBetween(0, 99)],
+        userrating: randBetween(0, 5),
+        url: `${urlStart}${rando}.jpg`,
+        description: `Traveler photo submitted by ${userName} (${month} ${timeOf})`,
+        helpful: false,
+        reported: false,
+      });
+    }
+    return `${paddedId},"${JSON.stringify(lines).replace(/"/g, '\'')}"\n`;
+  };
+  writeNextLine(makeLines, 0, n);
+}
+
+function outputCassandraLocations(n) {
+  const sentences = [];
+  const words = [];
+  for (let s = 0; s < 1000; s += 1) {
+    sentences.push(chance.sentence());
+    words.push(chance.word());
+  }
+  const makeLine = (id) => {
+    // paddedId
+    const paddedId = id.toString().padStart(8, '0');
+    // title
+    const title = words[randBetween(0, 999)];
+    // rating
+    const rating = randBetween(0, 5);
+    // review
+    const review1 = sentences[randBetween(0, 999)];
+    const review2 = sentences[randBetween(0, 999)];
+    // const images = outputCassandraImages(id);
+    return `${paddedId},${title},${rating},"[${review1},${review2}]"\n`;
+  };
+  writeNextLine(makeLine, 0, n);
+}
+
 function outputLocations(n) {
   outputLocationHeader();
   const sentences = [];
@@ -89,6 +146,12 @@ switch (process.argv[2]) {
     break;
   case 'image':
     outputImages(process.argv[3]);
+    break;
+  case 'cassandraLocations':
+    outputCassandraLocations(process.argv[3]);
+    break;
+  case 'cassandraImages':
+    outputCassandraImages(process.argv[3]);
     break;
   default:
     console.log('invalid input');

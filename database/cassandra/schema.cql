@@ -1,7 +1,6 @@
-CREATE KEYSPACE carousel WITH replication =
-  {‘class’: ‘SimpleStrategy’, ‘replication_factor’ : 3};
+CREATE KEYSPACE IF NOT EXISTS carousel WITH replication = {'class': 'SimpleStrategy', 'replication_factor' : 1};
 
-CREATE TYPE carousel.image (
+CREATE TYPE IF NOT EXISTS carousel.image (
   url TEXT,
   helpful BOOLEAN,
   reported BOOLEAN,
@@ -11,7 +10,7 @@ CREATE TYPE carousel.image (
   description TEXT
 );
 
-CREATE TABLE carousel.locations (
+CREATE TABLE IF NOT EXISTS carousel.locations (
   location_id TEXT PRIMARY KEY,
   title TEXT,
   rating TINYINT,

@@ -19,3 +19,6 @@ CREATE TABLE carousel.images (
   userRating INTEGER,
   description TEXT
 );
+
+CREATE INDEX idx_locations_location_id ON carousel.locations (location_id);
+CREATE INDEX idx_images_location_id ON carousel.images (location_id);
