@@ -10,7 +10,8 @@ RUN npm run build:prod
 
 ENV PORT="3012"
 
-ENV DB="mongo"
+ENV DB_HOST="127.0.0.1"
+ENV DB_PORT="9042"
 
 EXPOSE 3012
 CMD [ "npm", "run", "server:prod" ]

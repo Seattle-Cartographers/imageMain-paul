@@ -23,22 +23,20 @@ class Description extends React.Component {
   }
 
   componentDidMount() {
-
     // const locId = new URL(window.location.href);
     // const newLoc= locId.pathname
     // // console.log(secondLevelLocation)
     // console.log(newLoc)
 
-    const { testOne} = this.props;
+    const { testOne } = this.props;
     // need to get the last 3 charecters from this parsed url
     axios.get(`/${testOne}/api/carousels`)
       .then((locationData) => {
-        console.log(locationData.data)
         this.setState({
-          rating: locationData.data[0].rating,
-          review: locationData.data[0].review,
-          title: locationData.data[0].title,
-          images: locationData.data[0].images,
+          rating: locationData.data.rating,
+          review: locationData.data.review,
+          title: locationData.data.title,
+          images: locationData.data.images,
         });
       })
       .catch((err) => {

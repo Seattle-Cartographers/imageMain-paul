@@ -12,8 +12,8 @@ NUMRECORDS=$4
 # node $SEEDFILE location $NUMRECORDS > $LOCFILE
 # echo "writing images"
 # node $SEEDFILE image $NUMRECORDS > $IMAGESFILE
-echo "writing locations"
-node $SEEDFILE cassandraLocations $NUMRECORDS > $LOCFILE
+# echo "writing locations"
+# node $SEEDFILE cassandraLocations $NUMRECORDS > $LOCFILE
 echo "writing images"
 node $SEEDFILE cassandraImages $NUMRECORDS > $IMAGESFILE
 exit 0

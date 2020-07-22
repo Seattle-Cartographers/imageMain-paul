@@ -31,7 +31,7 @@ class Modal extends React.Component {
   //   this.setState({ index:this.props.current })
   // }
 
-  updateHelpful(e){
+  updateHelpful(e) {
     const { imginfo } = this.props;
     const { newindex } = this.state;
     const idTag = imginfo[newindex].imgId;
@@ -135,9 +135,9 @@ class Modal extends React.Component {
 
     const userData = imginfo[newindex];
 
-    const fullRating = [...Array(userData.userRating)].map((item, i) => ((<span className="profile-circle" key={i.toString()}> </span>)));
+    const fullRating = [...Array(userData.userrating)].map((item, i) => ((<span className="profile-circle" key={i.toString()}> </span>)));
     // this variable makes the empty circles
-    const emptyRating = [...Array(5 - userData.userRating)].map((item, i) => ((<span className="profile-empty-circle" key={i.toString()}> </span>)));
+    const emptyRating = [...Array(5 - userData.userrating)].map((item, i) => ((<span className="profile-empty-circle" key={i.toString()}> </span>)));
 
     if (GalBool === true || view === 'gallery') {
       return (

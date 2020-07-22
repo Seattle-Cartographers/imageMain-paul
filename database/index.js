@@ -1,16 +1,12 @@
-const mongoose = require('mongoose');
+const cassandra = require('cassandra-driver');
 
-// const mongoUri = ('mongodb://database/tripAdvisor', { useNewUrlParser: true, useUnifiedTopology: true });
-//'mongodb://mongo/tripAdvisor';
-//'mongodb://localhost/tripAdvisor';
+const host = process.env.DB_HOST || 'localhost';
+const port = process.env.DB_PORT || '9042';
 
-const envOp = process.env.DB || 'localhost';
-const mongoUri = `mongodb://${envOp}/listing`;
-const db = mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true });
-mongoose.Promise = global.Promise;
-// db.on('error',console.error.bind(console,'connection error:'));
-// db.once('open',function(){
+const client = new cassandra.Client({
+  contactPoints: [`${host}:${port}`],
+  localDataCenter: 'datacenter1',
+  keyspace: 'carousel',
+});
 
-// })
-
-module.exports.db = db;
+module.exports = client;
